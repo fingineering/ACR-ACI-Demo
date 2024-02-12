@@ -68,7 +68,12 @@ Now you can test the docker build locally with
 docker compose up --build -d
 ```
 
+And push to the Azure Container Registry
 
+```bash
+az acr login
+docker compose push
+```
 
 ## Allow Container Instance to pull from ACR
 
@@ -89,5 +94,5 @@ az role assignment create --assignee $ACI_CLIENT_ID --role "AcrPull" --scope $AC
 First we compose the 
 
 ```bash
-az container create -g ContainerDemo --name dqdemocontainer --image <image_name:latest> --assign-identity $ACI_ID
+az container create -g ContainerDemo --file deploy-aci.yaml
 ```
