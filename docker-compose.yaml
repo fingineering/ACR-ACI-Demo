@@ -1,0 +1,42 @@
+version: '3.7'
+
+services:
+  fastapi:
+    image: demoregistrydq.azurecr.io/myfastapi:latest
+    container_name: fastapi
+    restart: unless-stopped
+    build:
+      context: ./app
+      dockerfile: ./dockerfile
+    ports:
+      - 8000:8000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 5m
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  caddy:
+    container_name: caddy
+    image: demoregistrydq.azurecr.io/mycaddy:latest
+    restart: unless-stopped
+    build:
+      context: ./caddy
+      dockerfile: ./Dockerfile
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./data/caddy_data:/data
+      - ./data/caddy_config:/config
+    depends_on:
+      - fastapi
+    environment:
+      PROXY_BACKEND: fastapi
+      PROXY_PORT: 8000
+      DOMAIN: ${DOMAIN}
+
+volumes:
+  caddy_data:
+  caddy_config:
