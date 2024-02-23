@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 # A very minimalistic FastAPI application
 
-app FastAPI()
+app = FastAPI()
 
 
 @app.get("/")
