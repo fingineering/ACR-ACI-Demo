@@ -150,4 +150,5 @@ az container create -g ContainerDemo --file deploy-aci.yaml
 
 ## References
 
-- [YAML Reference for Azure Container Instances](https://learn.microsoft.com/de-de/azure/container-instances/container-instances-reference-yaml)
+- [YAML Reference for Azure Container Instances](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-reference-yaml)
+- [Azure CLI container reference](https://learn.microsoft.com/en-us/cli/azure/container?view=azure-cli-latest)
