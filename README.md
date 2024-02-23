@@ -1,5 +1,7 @@
 # Run a Container on Azure Container Instance using Docker-Compose
 
+![Container ship sailing the seas](/assets/container_ship_minimal.png)
+
 Let's say you have build and application, a simple one and you want easily run it on the Azure cloud. But it consists of multiple parts that you want to run in seperate containers. Now you have some options, like an Azure Kubernetes Cluster, or an Azure App Service plus some additional resources, or you create an Azure Container Instance. Simply run a container in the cloud, no complex infrastructure, no complex configuration.
 
 In the following example we start with creating a container registry and build a container group using Azure Container Instance to host a very simple example api with a caddy proxy to add HTTPS traffic encryption. The configuration will set you back $1.30 per day. Not the cheapest option to host an api, but very easy and will update your application as you update the container in the registry.
