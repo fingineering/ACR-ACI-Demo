@@ -1,11 +1,13 @@
 # Run a Container on Azure Container Instance using Docker-Compose
 
+Let's say you have build and application, a simple one and you want easily run it on the Azure cloud. But it consists of multiple parts that you want to run in seperate containers. Now you have some options, like an Azure Kubernetes Cluster, or an Azure App Service plus some additional resources, or you create an Azure Container Instance. Simply run a container in the cloud, no complex infrastructure, no complex configuration.
+
 ## Create a Resource Group
 
-Before we start to create actual resources, you might want to create a new
+Before we start creating actual resources, you might want to create a new
 resource group for your resource. If you already have one, you can use an
-existing as well. Take not that you can't access an Azure Container Registry in
-another Subscription.
+existing as well. Take notice that you can't access an Azure Container Registry in
+another Subscription, except for public Container Registry, therefore we will need to host all resources in one Azure Subscription.
 
 ```bash
 az group create -n ContainerDemo -l westeurope
@@ -46,6 +48,8 @@ az role assignment create --assignee $MY_ID role "AcrPush" --scope $ACR_ID
 az role assignment create --assignee $MY_ID role "AcrPull" --scope $ACR_ID
 ```
 
+If you don't have sufficient permissions to assign roles to resource, get someone with elevated permissions.
+
 Now lets add a system assigned managed identity to the container registry
 
 ```bash
@@ -79,7 +83,7 @@ docker compose push
 
 Bevor the container will successfully run, the Container Instance needs to be
 able to pull from the Azure Container Registry. Therefore the ACI needs to have
-the role `AcrPull` on the respective Azure Container Registry. 
+the role `AcrPull` on the respective Azure Container Registry.
 
 1. Get the id of the managed identity of the Azure Container Instance
 2. Ge the scope, which is the Id of the Azure Container Registry
@@ -91,8 +95,59 @@ az role assignment create --assignee $ACI_CLIENT_ID --role "AcrPull" --scope $AC
 
 ## Create the container Instance
 
-First we compose the 
+To run a multi container application, we need to use the deployment via yaml strategy. Use the following YAML to set up the example. In [References](#references) section you can find a link to the full YAML-Reference for Azure Container Registry.
+
+```yaml
+apiVersion: '2021-10-01'
+location: westeurope
+name: dqdemocontainer
+identity:
+  type: UserAssigned
+  userAssignedIdentities:
+    '/subscriptions/<subscription id>/resourcegroups/ContainerDemo/providers/Microsoft.ManagedIdentity/userAssignedIdentities/DQDemoContainer':
+      clientId: 'client id of the usesr assigned ManagedIdentity'
+      principalId: 'principal id of the user assigned ManagedIdentity'
+properties:
+  imageRegistryCredentials:
+  - server: demoregistrydq.azurecr.io
+    identity: "/subscriptions/<subscription id>/resourcegroups/ContainerDemo/providers/Microsoft.ManagedIdentity/userAssignedIdentities/DQDemoContainer"
+  sku: Standard
+  containers:
+  - name: fastapi
+    properties:
+      image: demoregistrydq.azurecr.io/myfastapi:latest
+      resources:
+        requests:
+          cpu: 1
+          memoryInGb: 1.5
+      ports:
+      - port: 8000
+  - name: caddy-sidecar
+    properties:
+      image: demoregistrydq.azurecr.io/mycaddy:latest
+      resources:
+        requests:
+          cpu: 1
+          memoryInGb: 1.5
+      ports:
+      - port: 80
+      - port: 443
+  osType: Linux
+  ipAddress:
+    type: Public
+    ports:
+    - protocol: tcp
+      port: 80
+    - protocol: tcp
+      port: 443
+tags: {exampleTag: tutorial}
+type: Microsoft.ContainerInstance/containerGroups
+```
 
 ```bash
 az container create -g ContainerDemo --file deploy-aci.yaml
 ```
+
+## References
+
+- [YAML Reference for Azure Container Instances](https://learn.microsoft.com/de-de/azure/container-instances/container-instances-reference-yaml)

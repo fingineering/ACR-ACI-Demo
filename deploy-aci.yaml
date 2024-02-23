@@ -4,13 +4,13 @@ name: dqdemocontainer
 identity:
   type: UserAssigned
   userAssignedIdentities: 
-    '/subscriptions/f0ccb1cf-bed6-48ee-9973-fab077ade488/resourcegroups/ContainerDemo/providers/Microsoft.ManagedIdentity/userAssignedIdentities/DQDemoContainer':
-      clientId: "3522948f-901e-4ab4-aff9-d9f54305ce00"
-      principalId: '08ff088d-5a33-4ab4-8fa5-f7ad2cd9438e'
+    '/subscriptions/<subscription id>/resourcegroups/ContainerDemo/providers/Microsoft.ManagedIdentity/userAssignedIdentities/DQDemoContainer':
+      clientId: 'client id of the usesr assigned ManagedIdentity'
+      principalId: 'principal id of the user assigned ManagedIdentity'
 properties:
   imageRegistryCredentials:
   - server: demoregistrydq.azurecr.io
-    identity: "/subscriptions/f0ccb1cf-bed6-48ee-9973-fab077ade488/resourcegroups/ContainerDemo/providers/Microsoft.ManagedIdentity/userAssignedIdentities/DQDemoContainer"
+    identity: "/subscriptions/<subscription id>/resourcegroups/ContainerDemo/providers/Microsoft.ManagedIdentity/userAssignedIdentities/DQDemoContainer"
   sku: Standard
   containers:
   - name: fastapi
