@@ -1,6 +1,6 @@
 # Run a Container on Azure Container Instance using Docker-Compose
 
-![Container ship sailing the seas](/assets/container_ship_minimal.png)
+![Container ship sailing the seas](/assets/ship_small.png)
 
 Let's say you have build and application, a simple one and you want easily run it on the Azure cloud. But it consists of multiple parts that you want to run in seperate containers. Now you have some options, like an Azure Kubernetes Cluster, or an Azure App Service plus some additional resources, or you create an Azure Container Instance. Simply run a container in the cloud, no complex infrastructure, no complex configuration.
 
